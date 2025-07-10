@@ -54,7 +54,7 @@ public class ServiceRuntime {
 
     public void startTrace() {
         trace.clear();
-        trace.record("start request");
+        trace.recordAuto("start request");
     }
 
     public String getTrace() {
@@ -62,21 +62,21 @@ public class ServiceRuntime {
     }
 
     public void handleIncomingRequest() {
-        trace.record("handleIncomingRequest: healthy=" + serviceHealthy + ", throttled=" + throttleActive);
+        trace.recordAuto("handleIncomingRequest: healthy=" + serviceHealthy + ", throttled=" + throttleActive);
         // logic when web request arrives
     }
 
     public <T> T handleOutgoingCall(Callable<T> call) throws Exception {
-        trace.record("handleOutgoingCall: start");
+        trace.recordAuto("handleOutgoingCall: start");
         try {
             T result = call.call();
-            trace.record("handleOutgoingCall: success");
+            trace.recordAuto("handleOutgoingCall: success");
             if (throttleActive) {
                 recoverService();
             }
             return result;
         } catch (TimeoutException | IOException e) {
-            trace.record("handleOutgoingCall: " + e.getClass().getSimpleName());
+            trace.recordAuto("handleOutgoingCall: " + e.getClass().getSimpleName());
             activateThrottle();
             throw e;
         }
@@ -85,12 +85,23 @@ public class ServiceRuntime {
     public void activateThrottle() {
         throttleActive = true;
         serviceHealthy = false;
-        trace.record("activateThrottle -> throttled");
+        trace.recordAuto("activateThrottle -> throttled");
     }
 
     public void recoverService() {
         throttleActive = false;
         serviceHealthy = true;
-        trace.record("recoverService -> healthy");
+        trace.recordAuto("recoverService -> healthy");
+    }
+
+    /**
+     * Record the final result of the request.
+     */
+    public void recordResult(String result) {
+        trace.recordAuto("result: " + result);
+    }
+
+    public void recordError(String error) {
+        trace.recordAuto("error: " + error);
     }
 }
