@@ -29,7 +29,7 @@ public class TraceResourceTest {
         RestAssured.get("/trace")
                 .then()
                 .statusCode(200)
-                .body(CoreMatchers.containsString("handleIncomingRequest"))
+                .body(CoreMatchers.containsString("Request count: 1"))
                 .body(CoreMatchers.containsString("result:"));
     }
 }
