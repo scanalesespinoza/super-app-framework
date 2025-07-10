@@ -46,6 +46,7 @@ public class CentralFlow {
      */
     public FlowResult<Optional<String>> executeUser(UserRequest request, Callable<Optional<String>> fetch) {
         runtime.startTrace();
+        runtime.handleIncomingRequest();
         try {
             if (!checkHealth()) {
                 return new FlowResult<>(false, "health check failed", null);
@@ -85,7 +86,7 @@ public class CentralFlow {
     private boolean checkHealth() {
         long free = Runtime.getRuntime().freeMemory();
         int threads = Thread.activeCount();
-        boolean ok = free > MIN_FREE_MEMORY && threads < MAX_ACTIVE_THREADS && runtime.isHealthy();
+        boolean ok = free > MIN_FREE_MEMORY && threads < MAX_ACTIVE_THREADS;
         if (!ok) {
             runtime.recordError("health");
         }
@@ -98,11 +99,7 @@ public class CentralFlow {
 
     private boolean canHandleRequest() {
         // placeholder for dependency validation
-        boolean ok = runtime.isHealthy();
-        if (!ok) {
-            runtime.recordError("dependencies");
-        }
-        return ok;
+        return true;
     }
 
     private boolean isRequestValid(UserRequest req) {
