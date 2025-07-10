@@ -16,7 +16,21 @@ Today there is no consistent way to build cloud‑native applications, and ineff
   - Transactions.
   - The global service state (available, degraded or unavailable).
 
-These utilities help identify issues quickly and make service recovery easier.
+## Automatic Helpers
+
+The framework will provide recommended steps to help create resilient services.
+You can see a basic mock implementation in the accompanying Quarkus example.
+
+## Quarkus Example
+
+A sample Quarkus project lives in the `quarkus-superapp` directory.
+It injects a mock `SuperApp` instance with CDI so you can explore the
+recommended service settings in Java.
+
+## Continuous Integration
+
+A GitHub Actions workflow builds the Quarkus example and runs the tests on every
+push or pull request.
 
 ## License
 
