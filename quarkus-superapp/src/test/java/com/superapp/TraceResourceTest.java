@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
-import com.superapp.framework.SuperApp;
+import com.superapp.framework.ServiceRuntime;
 
 @QuarkusTest
 public class TraceResourceTest {
@@ -16,7 +16,7 @@ public class TraceResourceTest {
     TestUserService testService;
 
     @Inject
-    SuperApp app;
+    ServiceRuntime runtime;
 
     @Test
     public void testTraceEndpoint() {
@@ -29,7 +29,7 @@ public class TraceResourceTest {
         RestAssured.get("/trace")
                 .then()
                 .statusCode(200)
-                .body(CoreMatchers.containsString("OnInCommingCall"))
+                .body(CoreMatchers.containsString("handleIncomingRequest"))
                 .body(CoreMatchers.containsString("result:"));
     }
 }

@@ -6,7 +6,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public class SuperAppResourceTest {
+public class ServiceRuntimeResourceTest {
 
     @Test
     public void testHelloEndpoint() {
