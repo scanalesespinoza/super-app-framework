@@ -21,10 +21,18 @@ Today there is no consistent way to build cloud‑native applications, and ineff
 The framework will provide recommended steps to help create resilient services.
 You can see a basic mock implementation in the accompanying Quarkus example.
 
+## Design Principles
+
+This project adopts consistent, domain‑driven naming to make the codebase easy to read.
+Core runtime hooks such as `initializeService`, `handleIncomingRequest`, and
+`handleOutgoingCall` reflect the life cycle of distributed services. The
+framework is built around cloud‑native best practices including health checks,
+resource limits and graceful recovery from failures.
+
 ## Quarkus Example
 
 A sample Quarkus project lives in the `quarkus-superapp` directory.
-It injects a mock `SuperApp` instance with CDI so you can explore the
+It injects a mock `ServiceRuntime` instance with CDI so you can explore the
 recommended service settings in Java. Source files are under
 `quarkus-superapp/src/main/java`.
 

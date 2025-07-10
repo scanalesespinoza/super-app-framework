@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
-import com.superapp.framework.SuperApp;
+import com.superapp.framework.ServiceRuntime;
 
 @QuarkusTest
 public class UserResourceTest {
@@ -16,7 +16,7 @@ public class UserResourceTest {
     TestUserService testService;
 
     @Inject
-    SuperApp app;
+    ServiceRuntime runtime;
 
     @Test
     public void testUserFound() {
@@ -35,13 +35,13 @@ public class UserResourceTest {
                 .when().post("/user")
                 .then()
                 .statusCode(503);
-        org.junit.jupiter.api.Assertions.assertFalse(app.isHealthy());
+        org.junit.jupiter.api.Assertions.assertFalse(runtime.isHealthy());
 
         testService.setScenario(TestUserService.Scenario.SUCCESS);
         RestAssured.given().body("{\"user\":\"sergio\"}").contentType("application/json")
                 .when().post("/user")
                 .then()
                 .statusCode(200);
-        org.junit.jupiter.api.Assertions.assertTrue(app.isHealthy());
+        org.junit.jupiter.api.Assertions.assertTrue(runtime.isHealthy());
     }
 }
