@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.superapp.framework.ServiceRuntime;
+import com.superapp.framework.CentralFlow;
 import com.superapp.service.UserService;
 
 @Path("/user")
@@ -24,27 +25,26 @@ public class UserResource {
     ServiceRuntime runtime;
 
     @Inject
+    CentralFlow flow;
+
+    @Inject
     UserService service;
 
 
     @POST
     public Response getUser(UserRequest request) throws Exception {
-        runtime.startTrace();
-        runtime.handleIncomingRequest();
-        try {
-            Optional<String> data = runtime.handleOutgoingCall(() -> service.fetchUser(request.user));
-            if (data.isPresent()) {
-                runtime.recordResult(data.get());
-                runtime.getTrace();
-                return Response.ok("{\"data\":\"" + data.get() + "\"}").build();
+        CentralFlow.FlowResult<Optional<String>> result =
+                flow.executeUser(request, () -> service.fetchUser(request.user));
+        if (!result.success) {
+            if ("invalid request".equals(result.reason)) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(result.reason).build();
             }
-            runtime.recordResult("not found");
-            runtime.getTrace();
-            return Response.status(Response.Status.NOT_FOUND).entity("not found").build();
-        } catch (TimeoutException | IOException e) {
-            runtime.recordError(e.getClass().getSimpleName());
-            runtime.getTrace();
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("error").build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(result.reason).build();
         }
+        Optional<String> data = result.payload;
+        if (data != null && data.isPresent()) {
+            return Response.ok("{\"data\":\"" + data.get() + "\"}").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("not found").build();
     }
 }
