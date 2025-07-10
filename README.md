@@ -25,7 +25,32 @@ You can see a basic mock implementation in the accompanying Quarkus example.
 
 A sample Quarkus project lives in the `quarkus-superapp` directory.
 It injects a mock `SuperApp` instance with CDI so you can explore the
-recommended service settings in Java.
+recommended service settings in Java. Source files are under
+`quarkus-superapp/src/main/java`.
+
+### Building the example
+
+The pom generates a runnable jar for local testing. Build it with:
+
+```bash
+mvn package -f quarkus-superapp/pom.xml
+```
+
+Run the application:
+
+```bash
+java -jar quarkus-superapp/target/superapp-quarkus-1.0.0-SNAPSHOT-runner.jar
+```
+
+### Trying the endpoints
+
+Request a user and inspect the trace:
+
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+  -d '{"user":"ana"}' http://localhost:8080/user
+curl http://localhost:8080/trace
+```
 
 ## Continuous Integration
 
